@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "lab2.main_url",
+      "type": "java.lang.String",
+      "description": "Description for lab2.main_url."
+  }
+] }
