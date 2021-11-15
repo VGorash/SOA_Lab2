@@ -2,12 +2,8 @@ package com.vgorash.lab2.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -24,15 +20,14 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${lab2.truststore.location}")
+    @Value("${truststore.location}")
     private String truststoreLocation;
 
-    @Value("${lab2.truststore.password}")
+    @Value("${truststore.password}")
     private String truststorePassword;
 
     @Bean

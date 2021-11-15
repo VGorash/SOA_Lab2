@@ -4,6 +4,9 @@ import com.vgorash.lab2.model.Ticket;
 import com.vgorash.lab2.model.TicketType;
 import com.vgorash.lab2.util.XStreamUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -21,13 +24,8 @@ public class MainController {
         this.restTemplate = restTemplate;
     }
 
-    @Value("${lab2.main_url}")
+    @Value("${service1.url}")
     private String serviceUrl;
-
-    @GetMapping("/test")
-    public String test(){
-        return "Success";
-    }
 
     @PostMapping(value = "/vip/{ticket-id}", produces = "application/xml")
     public String vipTicket(@PathVariable(name = "ticket-id") Long ticketId, HttpServletResponse response){
@@ -38,8 +36,10 @@ public class MainController {
             if(ticket.getPrice() != null){
                 ticket.setPrice(ticket.getPrice() * 2);
             }
-            result = restTemplate.postForObject(serviceUrl, XStreamUtil.toXML(ticket), String.class);
-            return result;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_XML);
+            HttpEntity<String> entity = new HttpEntity<>(XStreamUtil.toXML(ticket), headers);
+            return restTemplate.postForObject(serviceUrl, entity, String.class);
         }
         catch (HttpClientErrorException e){
             throw new ResponseStatusException(e.getStatusCode(), e.getMessage());
@@ -53,8 +53,10 @@ public class MainController {
             String result =  restTemplate.getForObject(serviceUrl + ticketId.toString(), String.class);
             Ticket ticket = XStreamUtil.fromXML(result);
             ticket.setPrice(price);
-            result = restTemplate.postForObject(serviceUrl, XStreamUtil.toXML(ticket), String.class);
-            return result;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_XML);
+            HttpEntity<String> entity = new HttpEntity<>(XStreamUtil.toXML(ticket), headers);
+            return restTemplate.postForObject(serviceUrl, entity, String.class);
         }
         catch (HttpClientErrorException e){
             throw new ResponseStatusException(e.getStatusCode(), e.getMessage());
